@@ -29,7 +29,11 @@ jobs:
         with:
           files: "package.json"
 
-      - name: Create a release branch
+      - name: Create a release for maven project
+        if: steps.check_pom_file_exists.outputs.files_exists == 'true'
+        run: mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:release-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT"
+
+      - name: Create a release branch for non maven project
         if: steps.check_pom_file_exists.outputs.files_exists == 'false'
         run: git checkout -b release/${{ inputs.version }}
 
