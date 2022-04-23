@@ -10,7 +10,7 @@ on:
 
 jobs:
   draft-new-release:
-    name: "Draft a new release"
+    name: "Create a new release"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
