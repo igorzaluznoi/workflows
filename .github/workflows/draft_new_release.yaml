@@ -23,7 +23,7 @@ jobs:
         with:
           files: "pom.xml"
           
-      - name: Check pom file existence
+      - name: Check package file existence
         id: check_package_file_exists
         uses: andstor/file-existence-action@v1
         with:
