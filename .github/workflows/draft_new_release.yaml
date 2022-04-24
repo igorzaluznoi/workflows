@@ -10,7 +10,7 @@ on:
         
       hotfix:
         type: string
-        description: 'Check if this is a hotfix'
+        description: 'Check if this is a hotfix.'
 
 jobs:
   draft-new-release:
