@@ -39,8 +39,12 @@ jobs:
           files: "package.json"
 
       - name: Create a release branch for maven project
-        if: steps.check_pom_file_exists.outputs.files_exists == 'true'
+        if: steps.check_pom_file_exists.outputs.files_exists == 'true' && inputs.hotfix = 'false'
         run: mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:release-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT"
+        
+      - name: Create a hotfix branch for maven project
+        if: steps.check_pom_file_exists.outputs.files_exists == 'true' && inputs.hotfix = 'true'
+        run: mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:hotfix-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT"
 
       - name: Create a release branch for non maven project
         if: steps.check_pom_file_exists.outputs.files_exists == 'false'
