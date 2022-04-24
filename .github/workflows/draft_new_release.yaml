@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         type: string
-        description: 'Version (the version you want to create a release for)'
+        description: 'Version (The version you want to create a release for)'
         required: true
         
       hotfix:
