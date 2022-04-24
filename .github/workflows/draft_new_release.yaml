@@ -5,12 +5,12 @@ on:
     inputs:
       version:
         type: string
-        description: 'The version you want to create a release for.'
+        description: 'Version (the version you want to create a release for)'
         required: true
         
       hotfix:
         type: string
-        description: 'Check this checkbox if this is a hotfix'
+        description: 'Is hotfix? (Check this checkbox if this is a hotfix)'
 
 jobs:
   draft-new-release:
