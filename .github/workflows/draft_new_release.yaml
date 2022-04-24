@@ -47,8 +47,12 @@ jobs:
         run: mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:hotfix-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT"
 
       - name: Create a release branch for non maven project
-        if: steps.check_pom_file_exists.outputs.files_exists == 'false'
+        if: steps.check_pom_file_exists.outputs.files_exists == 'false' && github.event.inputs.hotfix  == 'false'
         run: git checkout -b release/${{ inputs.version }}
+        
+      - name: Create a hotfix branch for non maven project
+        if: steps.check_pom_file_exists.outputs.files_exists == 'false' && github.event.inputs.hotfix  == 'true'
+        run: git checkout -b hotfix/${{ inputs.version }}
           
       - name: Bump version in package.json
         if: steps.check_package_file_exists.outputs.files_exists == 'true'
@@ -59,6 +63,7 @@ jobs:
         run: |
           git add package.json
           git commit --message "Prepare release ${{ github.event.inputs.version }}"
-          echo "::set-output name=commit::$(git rev-parse HEAD)"
+          echo "::set-output name=branch::$(git branch --show-current)"
+          
       - name: Push new branch
-        run: git push origin release/${{ inputs.version }}
+        run: git push origin ${{ steps.make-commit.outputs.branch }}
