@@ -26,6 +26,11 @@ jobs:
           git config user.name "GitHub actions"
           git config user.email noreply@github.com
           
+      - name: Save the initial commit hash
+        run: |
+          git config user.name "GitHub actions"
+          git config user.email noreply@github.com
+          
       - name: Check pom file existence
         id: check_pom_file_exists
         uses: andstor/file-existence-action@v1
@@ -40,11 +45,15 @@ jobs:
 
       - name: Create a release branch for maven project
         if: steps.check_pom_file_exists.outputs.files_exists == 'true' && github.event.inputs.hotfix  == 'false'
-        run: mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:release-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT"
+        run: |
+          mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:release-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT" -Dsquash=true
+          git reset --soft HEAD~1
         
       - name: Create a hotfix branch for maven project
         if: steps.check_pom_file_exists.outputs.files_exists == 'true' && github.event.inputs.hotfix == 'true'
-        run: mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:hotfix-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT"
+        run: |
+          mvn external.atlassian.jgitflow:jgitflow-maven-plugin:1.0-m5.1:hotfix-start -DreleaseVersion="${{ inputs.version }}" -DdevelopmentVersion="${{ inputs.version }}-SNAPSHOT" -Dsquash=true
+          git reset --soft HEAD~1
 
       - name: Create a release branch for non maven project
         if: steps.check_pom_file_exists.outputs.files_exists == 'false' && github.event.inputs.hotfix  == 'false'
@@ -62,7 +71,7 @@ jobs:
         id: make-commit
         run: |
           git add package.json
-          git commit --message "Prepare release ${{ github.event.inputs.version }}"
+          git commit --message "[PERFORM RELEASE] Updates files for the new release ${{ github.event.inputs.version }}"
           echo "::set-output name=branch::$(git branch --show-current)"
           
       - name: Push new branch
