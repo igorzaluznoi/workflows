@@ -7,6 +7,10 @@ on:
         type: string
         description: 'The version you want to create a release for.'
         required: true
+        
+      hotfix:
+        type: string
+        description: 'Check if this is a hotfix'
 
 jobs:
   draft-new-release:
